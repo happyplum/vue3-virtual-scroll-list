@@ -9,10 +9,6 @@
     "build": "cross-env mode=production rollup -c rollup.config.js",
     "prepare": "husky install"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reactjser/vue3-virtual-scroll-list.git"
-  },
   "keywords": [
     "vue3",
     "big-data",

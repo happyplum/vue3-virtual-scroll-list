@@ -39,7 +39,8 @@ const useResizeChange = (
   });
 
   onUpdated(() => {
-    dispatchSizeChange();
+    // dispatchSizeChange();
+    rootRef.value && resizeObserver!.observe(rootRef.value);
   });
 
   onUnmounted(() => {

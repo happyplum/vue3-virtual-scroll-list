@@ -10,5 +10,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   plugins: [],
-  rules: {},
+  rules: {
+    'vue/one-component-per-file': 'off',
+  },
 };

@@ -17,12 +17,10 @@ export default class Virtual {
   constructor(param, callUpdate) {
     this.init(param, callUpdate);
   }
-
   init(param, callUpdate) {
     // param data
     this.param = param;
     this.callUpdate = callUpdate;
-
     // size data
     this.sizes = new Map();
     this.firstRangeTotalSize = 0;

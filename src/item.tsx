@@ -5,8 +5,9 @@ import {
   onUnmounted,
   onUpdated,
   ref,
-  Ref,
+  renderSlot,
 } from 'vue';
+import type { Ref } from 'vue';
 import { ItemProps, SlotProps } from './props';
 
 const useResizeChange = (
@@ -58,26 +59,15 @@ export const Item = defineComponent({
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null);
     useResizeChange(props, rootRef, emit);
-
     return () => {
-      const {
-        tag: Tag,
-        component: Comp,
-        extraProps = {},
-        index,
-        source,
-        scopedSlots = {},
-        uniqueKey,
-      } = props;
+      const { tag: Tag, uniqueKey, scopedSlots, index, source } = props;
       const mergedProps = {
-        ...extraProps,
-        source,
+        data: source,
         index,
       };
-
       return (
         <Tag key={uniqueKey} ref={rootRef}>
-          <Comp {...mergedProps} scopedSlots={scopedSlots} />
+          {renderSlot(scopedSlots, 'default', { ...mergedProps })}
         </Tag>
       );
     };
@@ -91,13 +81,11 @@ export const Slot = defineComponent({
   setup(props, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null);
     useResizeChange(props, rootRef, emit);
-
     return () => {
       const { tag: Tag, uniqueKey } = props;
-
       return (
         <Tag ref={rootRef} key={uniqueKey}>
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </Tag>
       );
     };

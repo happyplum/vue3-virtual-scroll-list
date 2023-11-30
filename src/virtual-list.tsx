@@ -6,6 +6,7 @@ import {
   onUnmounted,
   ref,
   watch,
+  renderSlot,
 } from 'vue';
 import Virtual from './virtual';
 import { Item, Slot } from './item';
@@ -31,6 +32,7 @@ interface Range {
 export default defineComponent({
   name: 'VirtualList',
   props: VirtualProps,
+  emits: ['resized'],
   setup(props, { emit, slots, expose }) {
     const isHorizontal = props.direction === 'horizontal';
     const directionKey = isHorizontal ? 'scrollLeft' : 'scrollTop';
@@ -38,7 +40,6 @@ export default defineComponent({
     const root = ref<HTMLElement | null>();
     const shepherd = ref<HTMLDivElement | null>(null);
     let virtual: Virtual;
-
     /**
      * watch
      */
@@ -183,8 +184,8 @@ export default defineComponent({
     // in-place patch strategy will try to reuse components as possible
     // so those components that are reused will not trigger lifecycle mounted
     const getRenderSlots = () => {
-      const slots = [];
-      const { start, end } = range.value;
+      const renders = [];
+      const { start, end } = range.value!;
       const {
         dataSources,
         dataKey,
@@ -192,8 +193,6 @@ export default defineComponent({
         itemTag,
         itemStyle,
         extraProps,
-        dataComponent,
-        itemScopedSlots,
       } = props;
       for (let index = start; index <= end; index++) {
         const dataSource = dataSources[index];
@@ -203,7 +202,7 @@ export default defineComponent({
               ? dataKey(dataSource)
               : dataSource[dataKey];
           if (typeof uniqueKey === 'string' || typeof uniqueKey === 'number') {
-            slots.push(
+            renders.push(
               <Item
                 index={index}
                 tag={itemTag}
@@ -212,8 +211,7 @@ export default defineComponent({
                 uniqueKey={uniqueKey}
                 source={dataSource}
                 extraProps={extraProps}
-                component={dataComponent}
-                scopedSlots={itemScopedSlots}
+                scopedSlots={slots}
                 style={itemStyle}
                 class={`${itemClass}${
                   props.itemClassAdd ? ' ' + props.itemClassAdd(index) : ''
@@ -221,6 +219,11 @@ export default defineComponent({
                 onItemResize={onItemResized}
               />,
             );
+            // renders.push(
+            //   renderSlot(slots, 'default', {
+            //     ...mergedProps,
+            //   }),
+            // );
           } else {
             console.warn(
               `Cannot get the data-key '${dataKey}' from data-sources.`,
@@ -230,7 +233,7 @@ export default defineComponent({
           console.warn(`Cannot get the index '${index}' from data-sources.`);
         }
       }
-      return slots;
+      return renders;
     };
 
     // event called when each item mounted or size changed

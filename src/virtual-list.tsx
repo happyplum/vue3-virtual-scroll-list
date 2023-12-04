@@ -32,7 +32,7 @@ interface Range {
 export default defineComponent({
   name: 'VirtualList',
   props: VirtualProps,
-  emits: ['resized'],
+  emits: ['resized', 'tobottom', 'totop', 'scroll'],
   setup(props, { emit, slots, expose }) {
     const isHorizontal = props.direction === 'horizontal';
     const directionKey = isHorizontal ? 'scrollLeft' : 'scrollTop';

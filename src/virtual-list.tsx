@@ -32,7 +32,7 @@ interface Range {
 export default defineComponent({
   name: 'VirtualList',
   props: VirtualProps,
-  emits: ['resized', 'tobottom', 'totop', 'scroll'],
+  emits: ['resized', 'tobottom', 'totop', 'scroll', 'dragoverItem'],
   setup(props, { emit, slots, expose }) {
     const isHorizontal = props.direction === 'horizontal';
     const directionKey = isHorizontal ? 'scrollLeft' : 'scrollTop';
@@ -217,13 +217,9 @@ export default defineComponent({
                   props.itemClassAdd ? ' ' + props.itemClassAdd(index) : ''
                 }`}
                 onItemResize={onItemResized}
+                onDragoverItem={onDragoverItem}
               />,
             );
-            // renders.push(
-            //   renderSlot(slots, 'default', {
-            //     ...mergedProps,
-            //   }),
-            // );
           } else {
             console.warn(
               `Cannot get the data-key '${dataKey}' from data-sources.`,
@@ -241,7 +237,9 @@ export default defineComponent({
       virtual.saveSize(id, size);
       emit('resized', id, size);
     };
-
+    function onDragoverItem(e: DragEvent, data: any) {
+      emit('dragoverItem', e, data);
+    }
     // event called when slot mounted or size changed
     const onSlotResized = (type: SLOT_TYPE, size: number, hasInit: boolean) => {
       if (type === SLOT_TYPE.HEADER) {

@@ -32,7 +32,7 @@ interface Range {
 export default defineComponent({
   name: 'VirtualList',
   props: VirtualProps,
-  emits: ['resized', 'tobottom', 'totop', 'scroll', 'dragoverItem'],
+  emits: ['resized', 'tobottom', 'totop', 'scroll', 'dragoverItem', 'dropItem'],
   setup(props, { emit, slots, expose }) {
     const isHorizontal = props.direction === 'horizontal';
     const directionKey = isHorizontal ? 'scrollLeft' : 'scrollTop';
@@ -217,7 +217,8 @@ export default defineComponent({
                   props.itemClassAdd ? ' ' + props.itemClassAdd(index) : ''
                 }`}
                 onItemResize={onItemResized}
-                onDragoverItem={onDragoverItem}
+                ondragover={(e: DragEvent) => onDragoverItem(e, dataSource)}
+                ondrop={(e: DragEvent) => onDropItem(e, dataSource)}
               />,
             );
           } else {
@@ -239,6 +240,9 @@ export default defineComponent({
     };
     function onDragoverItem(e: DragEvent, data: any) {
       emit('dragoverItem', e, data);
+    }
+    function onDropItem(e: DragEvent, data: any) {
+      emit('dropItem', e, data);
     }
     // event called when slot mounted or size changed
     const onSlotResized = (type: SLOT_TYPE, size: number, hasInit: boolean) => {

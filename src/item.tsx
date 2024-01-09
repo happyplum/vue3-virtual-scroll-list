@@ -55,13 +55,10 @@ const useResizeChange = (
 export const Item = defineComponent({
   name: 'VirtualListItem',
   props: ItemProps,
-  emits: ['itemResize', 'dragoverItem'],
+  emits: ['itemResize'],
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null);
     useResizeChange(props, rootRef, emit);
-    function dragover(e: DragEvent, data: any) {
-      emit('dragoverItem', e, data);
-    }
     return () => {
       const { tag: Tag, uniqueKey, scopedSlots, index, source } = props;
       const mergedProps = {
@@ -69,11 +66,7 @@ export const Item = defineComponent({
         index,
       };
       return (
-        <Tag
-          key={uniqueKey}
-          ref={rootRef}
-          ondragover={(e: DragEvent) => dragover(e, source)}
-        >
+        <Tag key={uniqueKey} ref={rootRef}>
           {renderSlot(scopedSlots, 'default', { ...mergedProps })}
         </Tag>
       );

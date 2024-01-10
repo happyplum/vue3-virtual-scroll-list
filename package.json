@@ -1,6 +1,6 @@
 {
   "name": "@happyplum/virtual-list",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "vue3-virtual-scroll-list",
   "main": "dist/index.js",
   "type": "module",

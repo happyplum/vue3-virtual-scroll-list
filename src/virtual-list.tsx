@@ -328,7 +328,9 @@ export default defineComponent({
         document.removeEventListener('scroll', onScroll);
       }
     });
-
+    function getRange() {
+      return virtual.getRange();
+    }
     /**
      * public methods
      */
@@ -336,6 +338,7 @@ export default defineComponent({
       scrollToBottom,
       getSizes,
       getSize,
+      getRange,
       getOffset,
       getScrollSize,
       getClientSize,
